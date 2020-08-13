@@ -46,18 +46,17 @@
             <div class="detail">
               <p>{{item.content}}</p>
             </div>
-            <div class="more">
-              <a href="">READ MORE</a>
-            </div>
+            <a href="javascript:void(0);" class="more" @click="ripple(index,$event)" ref="ripple">READ MORE
+            </a>
           </div>
         </div>
 
       </div>
     </div>
     <!-- 关于我 -->
-    <!-- <div class="aboutme">
+    <div class="aboutme">
       <div class="section-3 activebg"></div>
-    </div> -->
+    </div>
     <!-- 联系页 -->
     <!-- <div class="contact">
       <div class="section-4 activebg"></div>
@@ -85,7 +84,6 @@ export default {
       // scrollH: 0
 
       showpj: false,
-
       project: [{
         name: 'card1',
         classname: 'one',
@@ -102,6 +100,8 @@ export default {
         title: '后端页面',
         pic1: require('../assets/images/pj/jk.png'),
         pic2: require('../assets/images/pj/jk.png'),
+        content: `一些后台管理类网页，主要技术是Vue，也有用到Element-ui和Echarts制作的后台管理系统。
+        有网络请求天气信息的网页和请求临时搭建的mockjs作为接口的网页等。`
       }, {
         name: 'card3',
         classname: 'three',
@@ -109,6 +109,8 @@ export default {
         title: 'H5小游戏',
         pic1: require('../assets/images/pj/pyg.png'),
         pic2: require('../assets/images/pj/pyg.png'),
+        content: `空闲时间做的H5小游戏网页，面向对象编程，能锻炼编程能力和算法逻辑等。
+        有2048、贪吃蛇等、`
       }]
     }
   },
@@ -201,30 +203,49 @@ export default {
       }
     },
 
+    // 滚动触发动画
     handleScroll () {
-      console.log(this);
+      // console.log(this);
       var that = this;
       // 页面滚动高度
       document.addEventListener('scroll', function () {
         var scrollTop = window.pageYOffset //页面滚动距离
         var sect2Top = document.querySelector(".pj").offsetTop //第二屏页面距离页面顶部距离
-        // console.log(scrollTop);
-        // console.log(sect2Top / 3);
-
         // 第一屏移动到第二屏时
         // 我的项目出现
         if (scrollTop >= 2 * sect2Top / 3) {
-          console.log(that);
+          // console.log(that);
           that.showpj = true
         }
       })
+    },
+
+    // 按钮渐变
+    ripple (index, e) {
+      // 接收v-for的第index按钮和点击事件对象$event
+      console.log(index);
+      // console.log(this.$refs.ripple[index]);
+      var a = this.$refs.ripple[index]; //获取第index个a
+      console.log(a);
+      console.log(e);
+      var x = e.offsetX; //点击位置距离a左上角起点的水平距离
+      var y = e.offsetY; //点击位置距离a左上角起点的垂直距离
+      console.log(x, y);
+      // 创建、添加span元素
+      var span = document.createElement("span")
+      span.className = "effect"
+      a.appendChild(span)
+      span.style = `left:${x}px;top:${y}px`
+      setTimeout(() => {
+        span.remove()
+      }, 1000)
     }
   },
   mounted () {
     //页面初次加载后调用begin()开始动画 (分割字符串为单个字母)
     this.begin();
     // this.scroll();
-    this.handleScroll()
+    this.handleScroll();
 
   },
 
@@ -251,6 +272,7 @@ export default {
     background-position: center 100%;
   }
 }
+
 .all {
   .activebg {
     width: 100%;
@@ -428,13 +450,15 @@ export default {
             position: absolute;
             bottom: 6vh;
             right: 10vw;
-            a {
-              padding: 20px 40px;
-              background: #333;
-              border-radius: 40px;
-              color: #fff;
-              text-shadow: 0 1px 0 black, 0 0 5px black;
-            }
+            padding: 20px 36px;
+            letter-spacing: 2px;
+            font-size: 18px;
+            background: linear-gradient(90deg, #0162c8, #55e7fc);
+            background: linear-gradient(90deg, #755bea, #ff72c0);
+            border-radius: 40px;
+            color: #fff;
+            overflow: hidden;
+            // text-shadow: 0 1px 0 black, 0 0 5px black;
           }
         }
       }
@@ -532,5 +556,30 @@ export default {
       background-image: url("../assets/images/bg/4.jpg");
     }
   }
+}
+</style>
+<style>
+@keyframes ripple {
+  0% {
+    width: 0px;
+    height: 0px;
+    opacity: 0.5;
+  }
+  100% {
+    width: 500px;
+    height: 500px;
+    opacity: 0;
+  }
+}
+.effect {
+  position: absolute;
+  background: #fff;
+  transform: translate(-50%, -50%);
+  /* 让其穿透至span */
+  pointer-events: none;
+  border-radius: 50%;
+  animation: ripple 1s linear infinite;
+  width: 0px;
+  height: 0px;
 }
 </style>
